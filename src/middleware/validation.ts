@@ -21,6 +21,7 @@ export const nearestWarehouseQuerySchema = z.object({
 export const shippingChargeQuerySchema = z.object({
   warehouseId: z.string().min(1, 'Warehouse ID is required'),
   customerId: z.string().min(1, 'Customer ID is required'),
+  productId: z.string().min(1, 'Product ID is required'),
   deliverySpeed: deliverySpeedSchema,
 });
 
