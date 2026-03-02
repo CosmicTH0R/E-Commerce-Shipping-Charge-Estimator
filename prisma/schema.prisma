@@ -1,0 +1,92 @@
+// Prisma Schema for E-Commerce Shipping Charge Estimator
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Customer Entity - Kirana Stores
+model Customer {
+  id          Int      @id @default(autoincrement())
+  customerId  String   @unique @map("customer_id")
+  name        String
+  phoneNumber String   @map("phone_number")
+  latitude    Float
+  longitude   Float
+  address     String?
+  city        String?
+  state       String?
+  pincode     String?
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([latitude, longitude])
+  @@map("customers")
+}
+
+// Seller Entity
+model Seller {
+  id         Int       @id @default(autoincrement())
+  sellerId   String    @unique @map("seller_id")
+  name       String
+  phoneNumber String?  @map("phone_number")
+  latitude   Float
+  longitude  Float
+  address    String?
+  city       String?
+  state      String?
+  isActive   Boolean   @default(true) @map("is_active")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  products   Product[]
+
+  @@index([latitude, longitude])
+  @@map("sellers")
+}
+
+// Product Entity
+model Product {
+  id          Int      @id @default(autoincrement())
+  productId   String   @unique @map("product_id")
+  sellerId    String   @map("seller_id")
+  name        String
+  description String?
+  sellingPrice Float   @map("selling_price")
+  weightKg    Float    @map("weight_kg")
+  dimensionLength Float @map("dimension_length")
+  dimensionWidth  Float @map("dimension_width")
+  dimensionHeight Float @map("dimension_height")
+  category    String?
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  
+  seller      Seller   @relation(fields: [sellerId], references: [sellerId])
+
+  @@index([sellerId])
+  @@map("products")
+}
+
+// Warehouse Entity
+model Warehouse {
+  id           Int      @id @default(autoincrement())
+  warehouseId  String   @unique @map("warehouse_id")
+  name         String
+  latitude     Float
+  longitude    Float
+  address      String?
+  city         String?
+  state        String?
+  capacity     Int?
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([latitude, longitude])
+  @@map("warehouses")
+}
