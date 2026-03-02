@@ -7,9 +7,7 @@ import { ValidationError } from './errorHandler';
  */
 
 // Delivery speed enum
-export const deliverySpeedSchema = z.enum(['standard', 'express'], {
-  errorMap: () => ({ message: 'Delivery speed must be either "standard" or "express"' }),
-});
+export const deliverySpeedSchema = z.enum(['standard', 'express']);
 
 // Query parameters for nearest warehouse endpoint
 export const nearestWarehouseQuerySchema = z.object({
@@ -37,7 +35,7 @@ export const calculateShippingBodySchema = z.object({
  * Middleware factory for validating requests
  */
 export const validate = (schema: ZodSchema, source: 'query' | 'body' = 'body') => {
-  return (req: Request, res: Response, next: NextFunction): void => {
+  return (req: Request, _res: Response, next: NextFunction): void => {
     try {
       const data = source === 'query' ? req.query : req.body;
       const validated = schema.parse(data);
@@ -50,9 +48,9 @@ export const validate = (schema: ZodSchema, source: 'query' | 'body' = 'body') =
       }
       
       next();
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof z.ZodError) {
-        const messages = error.errors.map(err => `${err.path.join('.')}: ${err.message}`);
+        const messages = error.issues.map((err: any) => `${err.path.join('.')}: ${err.message}`);
         next(new ValidationError(messages.join(', ')));
       } else {
         next(error);

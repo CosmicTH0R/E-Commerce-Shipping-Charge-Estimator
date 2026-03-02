@@ -1,4 +1,3 @@
-import { Warehouse } from '@prisma/client';
 import { WarehouseRepository } from '../repositories/warehouseRepository';
 import { SellerRepository } from '../repositories/sellerRepository';
 import { ProductRepository } from '../repositories/productRepository';
